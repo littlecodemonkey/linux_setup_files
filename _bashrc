@@ -1,0 +1,490 @@
+# .bashrc
+# Some of this is from Dave Crouse's bashrc
+# (sorry I don't have all sources, as it's pretty piecemeal)
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+	. /etc/bashrc
+fi
+
+
+#######################################################################
+# Exports
+#######################################################################
+PATH=$PATH:/home/matthew/ ;export PATH
+export BROWSER='firefox'
+export EDITOR='vi'
+export PS1="[\u@\H \[\e[34;1m\]\w\[\e[0m\]]\$ "
+# export PS1="[\[\033[1;34m\w\[\033[0m]\n[\t \u]$ "
+export LESS='-i -N -w  -z-4 -g -e -M -X -F -R -P%t?f%f \'
+export HISTFILESIZE=3000 # the bash history should save 3000 commands
+export HISTCONTROL=ignoredups #don't put duplicate lines in the history.
+
+
+#######################################################################
+# Define a few colors
+#######################################################################
+BLACK='\e[0;30m'
+BLUE='\e[0;34m'
+GREEN='\e[0;32m'
+CYAN='\e[0;36m'
+RED='\e[0;31m'
+PURPLE='\e[0;35m'
+BROWN='\e[0;33m'
+LIGHTGRAY='\e[0;37m'
+DARKGRAY='\e[1;30m'
+LIGHTBLUE='\e[1;34m'
+LIGHTGREEN='\e[1;32m'
+#LIGHTCYAN='\e[1;36m'
+LIGHTRED='\e[1;31m'
+LIGHTPURPLE='\e[1;35m'
+YELLOW='\e[1;33m'
+WHITE='\e[1;37m'
+NC='\e[0m'
+
+
+#######################################################################
+# Command Substitution Aliases				 
+#######################################################################
+alias path='echo -e ${PATH//:/\\n}'
+alias less='less -r'                          # raw control characters
+alias whence='type -a'                        # where, of a sort
+alias grep='grep --color'                     # show differences in colour
+alias cls='clear'
+alias c='clear'
+alias vi='gvim'
+alias vim='gvim'
+
+
+#######################################################################
+# LS
+#######################################################################
+alias dir='ls --color=auto --format=vertical'
+alias tree='tree -Csu'     # nice alternative to 'recursive ls'
+alias ls="ls --color=auto"
+alias lr='ls -lR'          # recursive ls
+alias l="ls -latr | more"
+alias ll="ls -l | more"
+alias la="ls -a | more"
+alias lsdots="ls .??*"
+
+
+#######################################################################
+# File Management
+#######################################################################
+alias cp="cp -i"
+alias mv="mv -i"
+alias rm="rm -i"
+alias home="cd $HOME"
+alias m="more"
+alias rmpre="rm -r *@*"
+alias cd="mycd"
+
+
+#######################################################################
+# Directory Aliases				 
+#######################################################################
+alias documents='cd ~/Documents'
+alias downloads='cd ~/Downloads'
+alias localhost='cd /var/www'
+alias home='cd ~/'
+alias back='cd $OLDPWD'
+alias whereami='display_info'
+alias ,="cd $dot "
+alias .="echo $cwd"
+alias ..="cd .."
+
+
+#######################################################################
+# MSDOS Compatability
+#######################################################################
+alias copy="cp -i"
+alias dir="ls -altr"
+alias del="rm -i"
+alias delete="rm -i"
+alias cls="clear"
+
+
+#######################################################################
+# TOOLS
+#######################################################################
+# ptk > Lauch perl debugger GUI.  Can attach to a script like:  ptk myscript.pl
+# dprof > Display perl profile data.
+# diffi > Tell diff to ignore all whitespace.
+# font > Print list of available fonts.
+#######################################################################
+alias ptk="/usr/bin/perl -d:ptkdb"
+alias dprof="/usr/bin/dprofpp"
+alias diffi="diff -w"
+alias font="xlsfonts"
+
+
+#######################################################################
+# System Aliases				 
+#######################################################################
+alias hogc='ps -e -o %cpu,pid,ppid,user,cmd | sort -nr | head'				# display the processes that are using the most CPU time and memory
+alias hogm='ps -e -o %mem,pid,ppid,user,cmd | sort -nr | head'				# display the processes that are using the most CPU time and memory
+alias mem_hogs_ps='ps wwaxm -o pid,stat,vsize,rss,time,command | head -10'		# to find memory hogs
+alias mem_hogs_top='top -l 1 -o rsize -n 10'
+alias kernelcleanup="dpkg -l 'linux-*' | sed '/^ii/!d;/'"$(uname -r | sed "s/\(.*\)-\([^0-9]\+\)/\1/")"'/d;s/^[^ ]* [^ ]* \([^ ]*\).*/\1/;/[0-9]/!d' | xargs sudo apt-get -y purge" # remove all unused Linux Kernel headers, images & modules
+alias logs='tail -f /var/log/messages /var/log/*log'
+alias cpu="ps -auxw | sort -r +2 | more"
+alias mem="ps -auxw | sort -r +3 | more"
+alias duk="du -sk * | sort -rn | more"
+alias ds="df -k ."
+alias h="history"
+alias src="source ~/.login; source ~/.bashrc; source ~/.my_aliases"
+
+
+#######################################################################
+# Time Aliases				 
+#######################################################################
+alias epochtime='date +%s'
+alias timestamp='date "+%Y%m%dT%H%M%S"'
+alias today='date +"%A, %B %-d, %Y"'
+alias mytime='date +%H:%M:%S'
+alias mkdirday='mkdir `date +%Y%m%d`_$1'
+
+
+#######################################################################
+# Kill Aliases				 
+#######################################################################
+alias killall='killall -u $USER -v'
+alias killall_wine='wineserver -k'
+alias ck='killall conky && conky -d'
+
+
+#######################################################################
+# Network/Internet -oriented stuff		 
+#######################################################################
+alias appson="netstat -lantp | grep -i stab | awk -F/ '{print $2}' | sort | uniq"	# view only the process name using an internet connection
+alias bandwidth='dd if=/dev/zero of=/dev/null bs=1M count=32768'			# processor / memory bandwidthd? in GB/s
+alias ftop='watch -d -n 2 'df; ls -FlAt;''						# like top, but for files
+alias hdinfo='hdparm -i[I] /dev/sda'							# hard disk information - model/serial no.
+alias hostname_lookup='lookupd -d'							# interactive debugging mode for lookupd (use tab-completion)
+alias http_trace='pkt_trace port 80'							# to show all HTTP packets
+alias ip4grep="grep -E '([0-9]{1,3}\.){3}[0-9]{1,3}'"					# look for IPv4 address in files
+alias ip='curl www.whatismyip.org'
+alias ip_info='ipconfig getpacket en1'							# info on DHCP server, router, DNS server, etc (for en0 or en1)
+alias ipt80='sudo iptstate -D 80'							# check out only iptables state of http port 80 (requires iptstate)
+alias ip_trace='pkt_trace ip'								# to show all IP packets
+alias listen='sudo netstat -pnutl' 							# lists all listening ports together with PID of associated process
+alias lsock='sudo /usr/sbin/lsof -i -P'							# to display open sockets ( -P option to lsof disables port names)
+alias memrel='free && sync && echo 3 > /proc/sys/vm/drop_caches && free'		# release memory used by the Linux kernel on caches
+alias nethogs='sudo nethogs eth0' 							# start "nethogs" program (sudo apt-get install nethogs)
+alias netl='sudo nmap -sT -O localhost'
+alias netscan='sudo iwlist wlan0 scan'							# to scan your environment for available networks, do the following
+alias netstats='sudo iwspy wlan0'							# if card supports it, you can collect wireless statistics by using
+alias network='sudo lshw -C network' 							# view network device info
+alias networkdump='sudo tcpdump not port 22' 						# dump all the network activity except ssh stuff
+alias nmr='sudo /etc/rc.d/networkmanager restart'
+alias nsl='netstat -f inet | grep -v CLOSE_WAIT | cut -c-6,21-94 | tail +2'		# show all programs connected or listening on a network port
+alias ns='netstat -alnp --protocol=inet | grep -v CLOSE_WAIT | cut -c-6,21-94 | tail +2'
+alias openports='sudo netstat -nape --inet' 						# view open ports
+alias pkt_trace='sudo tcpflow -i `active_net_iface` -c'
+alias ports='lsof -i -n -P' 								# view programs using an internet connection
+alias portstats='sudo netstat -s' 							# show statistics for all ports
+alias randomip='echo $((RANDOM%256)).$((RANDOM%256)).$((RANDOM%256)).$((RANDOM%256))'	# generate a random IP address
+alias ramvalue='sudo dd if=/dev/mem | cat | strings'					# will show you all the string (plain text) values in ram
+alias randommac='python -c "from itertools import imap; from random import randint; print ':'.join(['%02x'%x for x in imap(lambda x:randint(0,255), range(6))])"'										# generate random valid mac addresses
+alias rdp='rdesktop -u "$USER" -g 1600x1200 -D -r disk:home=/home -r clipboard:PRIMARYCLIPBOARD'	# quick full screen RDP connection
+alias restartnet='sudo /etc/rc.d/network restart;sudo /etc/rc.d/wicd restart'
+alias setessid='sudo iwconfig wlan0 essid network-essid'				# set the essid, which identifies the network access point you want
+alias smtp_trace='pkt_trace port smtp'							# to show all SMTP packets
+alias sql='mysql -p -u root'
+alias tcpstats='sudo netstat -st' 							# show statistics for tcp ports
+alias tcp_='sudo netstat -atp' 								# list all TCP ports
+alias tcp_trace='pkt_trace tcp'								# to show all TCP packets
+alias udpstats='sudo netstat -su' 							# show statistics for udp ports
+alias udp='sudo netstat -aup' 								# list all UDP ports
+alias udp_trace='pkt_trace udp'								# to show all UDP packets
+alias website_dl='wget --random-wait -r -p -e robots=off -U mozilla "$1"'		# download an entire website
+alias website_images='wget -r -l1 --no-parent -nH -nd -P/tmp -A".gif,.jpg" "$1"'	# download all images from a site
+alias whois='whois -H'
+alias wscan_='iwlist scan'								# terminal network scan for wireless signals
+
+
+#######################################################################
+# Miscellaneous
+#######################################################################
+
+# Terrorist threat level text			 
+function terrorist-level() {
+    echo "Terrorist threat level: $(curl -s 'http://www.dhs.gov/dhspublic/getAdvisoryCondition' | awk -F\" 'NR==2{ print $2 }')"
+}
+
+# Add a function you've defined to .bashrc	 #
+function addfunction() { declare -f $1 >> ~/.bashrc ; }
+
+###### pretend to be busy in office to enjoy a cup of coffee
+function grepcolor() { cat /dev/urandom | hexdump -C | grep --color=auto "ca fe"; }
+
+###### watch the National debt clock
+function natdebt() { watch -n 10 "wget -q http://www.brillig.com/debt_clock -O - | grep debtiv.gif | sed -e 's/.*ALT=\"//' -e 's/\".*//' -e 's/ //g'"; }
+
+###### convert hexadecimal numbers to decimals
+function dec()		{ printf "%d\n" $1; }
+
+###### convert decimals to hexadecimal numbers
+function hex()		{ printf "0x%08x\n" $1; }
+
+###### convert decimals
+function dec2all() {
+	if [[ $1 ]]; then
+		echo "decimal $1 = binary $(dec2bin $1)"
+		echo "decimal $1 = octal $(dec2oct $1)"
+		echo "decimal $1 = hexadecimal $(dec2hex $1)"
+		echo "decimal $1 = base32 $(dec2b32 $1)"
+		echo "decimal $1 = base64 $(dec2b64 $1)"
+		echo "deciaml $1 = ascii $(dec2asc $1)"
+	fi
+}
+
+###### convert normal to unix
+function normal2unix() { echo "${@}" | awk '{print mktime($0)}'; }
+
+###### convert unix to normal
+function unix2normal() { echo $1 | awk '{print strftime("%Y-%m-%d %H:%M:%S",$1)}'; }
+
+###### Pascal's triangle
+function pascal() { l=15;for((i=0;i<$l;i++));do eval "a$i=($(pv=1;v=1;for((j=0;j<$l-$i;j++));do [ $i -eq 0 -o $j -eq 0 ]&&{ v=1 && pv=1; }||v=$((pv+a$((i-1))[$((j))]));echo -n "$v ";pv=$v;done;));";o="$(eval echo "$(for((k=0;k<=$i;k++)); do eval "echo -n \"\$((a\$((i-k))[k])) \""; done)")";echo "$o";s="${#o}"; done; } | while read l; do j=$((s-${#l}/2)); echo "$(while ((i++ < j)); do echo -n " ";done;)$l";done
+
+###### generate prime numbers, without using arrays.
+# script contributed by Stephane Chazelas.
+function primes()
+{
+LIMIT=1000                    # Primes, 2 ... 1000.
+Primes()
+{
+ (( n = $1 + 1 ))             # Bump to next integer.
+ shift                        # Next parameter in list.
+#  echo "_n=$n i=$i_"
+ if (( n == LIMIT ))
+ then echo $*
+ return
+ fi
+ for i; do                    # "i" set to "@", previous values of $n.
+#   echo "-n=$n i=$i-"
+   (( i * i > n )) && break   # Optimization.
+   (( n % i )) && continue    # Sift out non-primes using modulo operator.
+   Primes $n $@               # Recursion inside loop.
+   return
+   done
+   Primes $n $@ $n            #  Recursion outside loop.
+                              #  Successively accumulate
+			      #+ positional parameters.
+                              #  "$@" is the accumulating list of primes.
+}
+Primes 1
+}
+
+
+###### radicals of numbers
+# copyright 2007 - 2010 Christopher Bratusek
+function radical() {
+	if [[ $1 ]]; then
+		echo "sqrt($1)" | bc -l
+	fi
+}
+
+###### convert to roman numerals
+function roman-numeral()
+{
+python -c 'while True: print (lambda y,x=[],nums={ 1000:"M",900:"CM",500:"D",400:"CD",100:"C",90:"XC",
+50:"L",40:"XL",10:"X",9:"IX",5:"V",4:"IV",1:"I"}: (lambda ro=(lambda : map(lambda g,r=lambda b:x.append(
+y[-1]/b),t=lambda v:y.append(y[-1]%v):map(eval,["r(g)","t(g)"]),sorted(nums.keys())[::-1]))():"".join(
+map(lambda fg: map(lambda ht: nums[ht],sorted(nums.keys())[::-1])[fg] * x[fg],range(len(x)))))())([int(
+raw_input("Please enter a number between 1 and 4000: "))])'
+}
+
+###### finding the square root of numbers
+function sqrt() { echo "sqrt ("$1")" | bc -l; }
+
+###### converts a string (words, text) to binary
+function string2bin() { perl -nle 'printf "%0*v8b\n"," ",$_'; }
+
+# Get the headlines of an atom feed		 #
+function atomtitles() { curl --silent $1 | xmlstarlet sel -N atom="http://www.w3.org/2005/Atom" -t -m /atom:feed/atom:entry -v atom:title -n; }
+
+###### roll a single die of "$1" sides, just once
+# default number of sides is 6
+# written by Dallas Vogels
+function one-die()
+{
+function roll_die() {
+  # capture parameter
+  declare -i DIE_SIDES=$1
+  # check for die sides
+  if [ ! $DIE_SIDES -gt 0 ]; then
+    # default to 6
+    DIE_SIDES=6
+  fi
+  # echo to screen
+  echo $[ ( $RANDOM % $DIE_SIDES )  + 1 ]
+}
+# roll_die 10  # returns 1 to 10 as per 10 sides
+# roll_die 2   # returns 1 or 2 as per 2 sides
+roll_die "$1"
+}
+
+# Backup a file with a date-time stamp Usage "bu filename.txt"
+function bu() { cp $1 ${1}-`date +%Y%m%d%H%M`.backup ; }
+function buf() { cp -v $1 ${1/${1%%.*}/$f-$(date +"%Y%m%d_%H%M%S")}; }
+
+###### geolocate a given IP address
+function ip2loc() { wget -qO - www.ip2location.com/$1 | grep "<span id=\"dgLookup__ctl2_lblICountry\">" | sed 's/<[^>]*>//g; s/^[\t]*//; s/&quot;/"/g; s/</</g; s/>/>/g; s/&amp;/\&/g'; }
+
+###### netinfo - shows network information for your system
+function netinfo()
+{
+echo "--------------- Network Information ---------------"
+/sbin/ifconfig | awk /'inet addr/ {print $2}'
+/sbin/ifconfig | awk /'Bcast/ {print $3}'
+/sbin/ifconfig | awk /'inet addr/ {print $4}'
+/sbin/ifconfig | awk /'HWaddr/ {print $4,$5}'
+myip=`lynx -dump -hiddenlinks=ignore -nolist http://checkip.dyndns.org:8245/ | sed '/^$/d; s/^[ ]*//g; s/[ ]*$//g' `
+echo "${myip}"
+echo "---------------------------------------------------"
+}
+
+###### check whether or not a port on your box is open
+function portcheck() { for i in $@;do curl -s "deluge-torrent.org/test-port.php?port=$i" | sed '/^$/d;s/<br><br>/ /g';done; }
+
+###### cleanly list available wireless networks (using iwlist)
+function wscan() { iwlist wlan0 scan | sed -ne 's#^[[:space:]]*\(Quality=\|Encryption key:\|ESSID:\)#\1#p' -e 's#^[[:space:]]*\(Mode:.*\)$#\1\n#p'; }
+
+###### Search commandlinefu.com from the command line Usage: cmdfu hello world
+function cmdfu() { curl "http://www.commandlinefu.com/commands/matching/$@/$(echo -n $@ | openssl base64)/plaintext"; }
+
+###### fuman, an alternative to the 'man' command that shows commandlinefu.com examples
+function fuman() { lynx -width=$COLUMNS -nonumbers -dump "http://www.commandlinefu.com/commands/using/$1" |sed '/Add to favourites/,/This is sample output/!d' |sed 's/ *Add to favourites/----/' |less -r; }
+
+###### basic encrypt / decrypt
+# example: "encry filename" or "decry filename"
+function encry() { gpg -ac --no-options "$1"; }
+function decry() { gpg --no-options "$1"; }
+
+###### detect language of a string
+function detectlanguage() { curl -s "http://ajax.googleapis.com/ajax/services/language/detect?v=1.0&q=$@" | sed 's/{"responseData": {"language":"\([^"]*\)".*/\1\n/'; }
+
+###### find a location's coordinates usage:	findlocation "Las Vegas, Nevada" = coordinates: [ -115.1728160, 36.1146460, 0 ]
+function findlocation() { place=`echo $1 | sed 's/ /%20/g'` ; curl -s "http://maps.google.com/maps/geo?output=json&oe=utf-8&q=$place" | grep -e "address" -e "coordinates" | sed -e 's/^ *//' -e 's/"//g' -e 's/address/Full Address/';}
+
+###### Google search (example: google dog)
+function google() { firefox "http://www.google.com/search?&num=100&q=${@}" & }
+
+###### translate a word using Google
+# usage: translate <phrase> <output-language>
+# example: translate "hola" en = hello (will auto-detect source language)
+# for a list of language codes: http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
+function translate() { wget -qO- "http://ajax.googleapis.com/ajax/services/language/translate?v=1.0&q=$1&langpair=%7C${2:-en}" | sed 's/.*{"translatedText":"\([^"]*\)".*/\1\n/'; }
+
+# Super stealth background launch
+function daemon() { (exec "$@" >&/dev/null &); }
+
+# Delete function
+function del() { mv "$@" "/${HOME}/.local/share/Trash/files/"; }
+
+#DICTIONARIES#
+###### define "whatever"
+function dic() { curl dict://dict.org/d:"$@" ; }
+
+###### look in Webster
+function webster() { curl dict://dict.org/d:${1}:web1913; }
+
+###### look in WordNet
+function wordnet() { curl dict://dict.org/d:${1}:wn; }
+
+#######################################################################
+# Site down for everyone or just me?
+#######################################################################
+function downforme() {
+	RED='\e[1;31m'
+	GREEN='\e[1;32m'
+	YELLOW='\e[1;33m'
+	NC='\e[0m'
+	if [ $# = 0 ]
+	then
+		echo -e "${YELLOW}usage:${NC} downforme website_url"
+	else
+		JUSTYOUARRAY=(`lynx -dump http://downforeveryoneorjustme.com/$1 | grep -o "It's just you"`)
+		if [ ${#JUSTYOUARRAY} != 0 ]
+		then
+			echo -e "${RED}It's just you. \n${NC}$1 is up."
+		else
+			echo -e "${GREEN}It's not just you! \n${NC}$1 looks down from here."
+		fi
+	fi
+}
+
+
+#######################################################################
+# Size of directories in MB	
+#######################################################################
+function ds()
+{
+    echo "size of directories in MB"
+    if [ $# -lt 1 ] || [ $# -gt 2 ]; then
+        echo "you did not specify a directy, using pwd"
+        DIR=$(pwd)
+        find $DIR -maxdepth 1 -type d -exec du -sm \{\} \; | sort -nr
+    else
+        find $1 -maxdepth 1 -type d -exec du -sm \{\} \; | sort -nr
+    fi
+}
+
+
+#######################################################################
+# Size of items in directory
+#######################################################################
+function dubigf() {
+  du -sh * | awk '/[[:space:]]*[[:digit:]]+,*[[:digit:]]*G/' | sort -nr
+  du -sh * | awk '/[[:space:]]*[[:digit:]]+,*[[:digit:]]*M/' | sort -nr
+}
+
+# Edit files in place to ensure Unix line-endings					 #
+function fixlines() { /usr/bin/perl -pi~ -e 's/\r\n?/\n/g' "$@" ; }
+
+# Get just the HTTP headers from a web page	(and its redirects)				 #
+function http_headers() { /usr/bin/curl -I -L $@ ; }
+
+###### colored status of running services
+function services() { printf "$(service --status-all 2>&1|sed -e 's/\[ + \]/\\E\[42m\[ + \]\\E\[0m/g' -e 's/\[ - \]/\\E\[41m\[ - \]\\E\[0m/g' -e 's/\[ ? \]/\\E\[43m\[ ? \]\\E\[0m/g')\n"; }
+
+# Search IMDB.COM
+function imdb() { firefox "http://www.imdb.com/find?s=all&q="${@}"&x=0&y=0" & }
+
+# List your MACs address
+function lsmac() { ifconfig -a | awk '/HWaddr/ {print $5}' ; }
+
+###### example:	man2text wipe	=	wipe.txt
+function man2text() { man "$1" | col -b > ~/man_"$1".txt; }
+
+# Crawl a webpage for links			 #
+function webcrawl() { lynx -dump $1 | grep -A999 "^References$" | tail -n +3 | awk '{print $2 }'; }
+
+
+#######################################################################
+# Switch tor on and off (requires privoxy)
+#######################################################################
+function torswitch() {
+	if [[ $EUID == 0 ]]; then
+		case $1 in
+			*on )
+				if [[ $(grep forward-socks4a /etc/privoxy/config) == "" ]]; then
+					echo "forward-socks4a / 127.0.0.1:9050 ." >> /etc/privoxy/config
+				else
+					sed -e 's/\# forward-socks4a/forward-socks4a/g' -i /etc/privoxy/config
+					/etc/init.d/tor restart
+					/etc/init.d/privoxy restart
+				fi
+			;;
+			*off )
+				sed -e 's/forward-socks4a/\# forward-socks4a/g' -i /etc/privoxy/config
+				/etc/init.d/tor restart
+				/etc/init.d/privoxy restart
+			;;
+		esac
+	fi
+}
+
