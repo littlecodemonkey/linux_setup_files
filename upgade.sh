@@ -18,7 +18,7 @@ git -C '/opt/beef/' pull
 git -C '/opt/SecLists/' pull
 git -C '/opt/gitlist/' pull
 git -C '/opt/sqlmap/' pull
-git -C '/opt/wifite/' pull:wifiphisher/
+git -C '/opt/wifite/' pull
 git -C '/opt/masscan/' pull
 git -C '/opt/gitrob/' pull
 git -C '/opt/wifiphisher/' pull
